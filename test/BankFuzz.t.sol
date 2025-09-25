@@ -147,6 +147,7 @@ contract BankFuzzTest is TestHelper {
     /// @notice Fuzz test for ownership transfer
     function testFuzzOwnershipTransfer(address newOwner) public {
         vm.assume(newOwner != address(0) && newOwner != owner);
+        vm.assume(newOwner.code.length == 0); // Not a contract
         
         vm.prank(owner);
         bank.transferOwnership(newOwner);
