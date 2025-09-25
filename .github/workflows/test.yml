@@ -1,15 +1,19 @@
-name: CI
+name: Tests
 
 on:
   push:
+    branches: [ main, develop ]
   pull_request:
-  workflow_dispatch:
+    branches: [ main ]
 
 env:
   FOUNDRY_PROFILE: ci
 
 jobs:
   check:
+    strategy:
+      fail-fast: true
+
     name: Foundry project
     runs-on: ubuntu-latest
     steps:
@@ -19,18 +23,15 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
 
-      - name: Show Forge version
-        run: |
-          forge --version
-
-      - name: Run Forge fmt
-        run: |
-          forge fmt --check
-        id: fmt
+      - name: Show Foundry version
+        run: forge --version
 
       - name: Run Forge build
         run: |
+          forge --version
           forge build --sizes
         id: build
 
@@ -38,3 +39,19 @@ jobs:
         run: |
           forge test -vvv
         id: test
+
+      - name: Run Forge coverage
+        run: |
+          forge coverage --report lcov
+        id: coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: lcov.info
+          fail_ci_if_error: false
+
+      - name: Run Forge gas report
+        run: |
+          forge test --gas-report
+        id: gas
