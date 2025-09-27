@@ -62,7 +62,7 @@ contract Bank is IBank {
     }
 
     /// @inheritdoc IBank
-    function deposit() external payable override {
+    function deposit() external payable virtual override {
         require(msg.value > 0, "Bank: deposit amount must be greater than 0");
         _deposit(msg.sender, msg.value);
     }
@@ -70,7 +70,7 @@ contract Bank is IBank {
     /// @notice Internal deposit function
     /// @param user The address making the deposit
     /// @param amount The amount being deposited
-    function _deposit(address user, uint256 amount) internal {
+    function _deposit(address user, uint256 amount) internal virtual {
         require(amount > 0, "Bank: deposit amount must be greater than 0");
         require(user != address(0), "Bank: invalid user address");
 
@@ -187,7 +187,7 @@ contract Bank is IBank {
 
     /// @notice Transfer ownership to a new address
     /// @param newOwner The address of the new owner
-    function transferOwnership(address newOwner) external onlyOwner {
+    function transferOwnership(address newOwner) external virtual onlyOwner {
         require(newOwner != address(0), "Bank: new owner is the zero address");
         owner = newOwner;
     }

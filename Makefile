@@ -30,6 +30,9 @@ test-unit: ## Run unit tests only
 test-fuzz: ## Run fuzz tests only
 	forge test --match-contract BankFuzzTest
 
+test-workflow: ## Run complete workflow test
+	forge test --match-contract CompleteWorkflowTest -vv
+
 test-coverage: ## Run tests with coverage report
 	forge coverage
 
@@ -47,6 +50,10 @@ deploy-local: ## Deploy to local Anvil network
 deploy-sepolia: ## Deploy to Sepolia testnet
 	@echo "Deploying to Sepolia..."
 	forge script script/Deploy.s.sol --rpc-url $(SEPOLIA_RPC_URL) --broadcast --verify
+
+deploy-complete: ## Deploy complete workflow (BigBank + Admin)
+	@echo "Deploying complete workflow..."
+	forge script script/DeployCompleteWorkflow.s.sol --rpc-url http://localhost:8545 --broadcast --private-key $(PRIVATE_KEY)
 
 # Interactions
 deposit: ## Make a deposit (requires BANK_CONTRACT_ADDRESS and DEPOSIT_AMOUNT env vars)
